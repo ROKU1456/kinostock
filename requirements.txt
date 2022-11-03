@@ -5,4 +5,6 @@ pytz==2021.3
 pytz-deprecation-shim==0.1.0.post0
 streamlit==1.13.0
 yfinance==0.1.84
-plotly.graph_objects
+plotly==5.10.0
+cufflinks==0.17.3
+numpy
