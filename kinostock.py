@@ -8,6 +8,8 @@ import datetime
 import pytz
 st.set_option('deprecation.showPyplotGlobalUse', False)
 import yfinance as yf
+import cufflinks as cf
+
 
 # Sidebar
 st.sidebar.subheader('Query parameters')
@@ -32,18 +34,29 @@ mpf.plot(df, type='candle',figsize=(30,10),style='yahoo')
 mpf.plot(df, type='candle', figsize=(30,10), style='starsandstripes',volume=True)
 
 #ボリンジャーバンドの追加
-import talib as ta
-df['upper'], df['middle'], df['lower'] = ta.BBANDS(df['Adj Close'],timeperiod=25, nbdevup=2, nbdevdn=2, matype=0)
+#import talib as ta
+#df['upper'], df['middle'], df['lower'] = ta.BBANDS(df['Adj Close'],timeperiod=25, nbdevup=2, nbdevdn=2, matype=0)
 #matype 0:単純移動平均、1:指数移動平均、2:加重移動平均
 
 #mpfinanceでデフォルｙとで認識できるのはopen, high, low, close, volumeだけ
 #それ以外はmake_addplotでメソッドを追加する
-apds = [mpf.make_addplot(df['upper'], color='g'),
-        mpf.make_addplot(df['middle'], color='b'),
-        mpf.make_addplot(df['lower'], color='r')
-       ]
+#apds = [mpf.make_addplot(df['upper'], color='g'),
+#        mpf.make_addplot(df['middle'], color='b'),
+#        mpf.make_addplot(df['lower'], color='r')
+#       ]
 
-mpf.plot(df, type='candle', figsize=(30,10), style='yahoo', volume=True, addplot=apds)
+#mpf.plot(df, type='candle', figsize=(30,10), style='yahoo', volume=True, addplot=apds)
+
+# Bollinger bands
+#st.header('**Bollinger Bands**')
+tickerDf = tickerData.history(period='1d', start=start_date, end=end_date) #get the historical prices for this ticker
+qf=cf.QuantFig(tickerDf,legend='top',name='GS')
+qf.add_bollinger_bands()
+fig = qf.iplot(asFigure=True)
+st.plotly_chart(fig)
+
+
+
 
 #MACD用のdf追加
 df['macd'], df['macdsignal'], df['macdhist'] = ta.MACD(df['Adj Close'],fastperiod=12,slowperiod=26, signalperiod=9)
